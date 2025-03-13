@@ -25,7 +25,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	const checkboxRef = useRef<HTMLInputElement>(null);
 	const backdropRef = useRef<HTMLDivElement>(null);
 	// Add state for modal visibility
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
 	// Initialize audio element on client-side only
 	useEffect(() => {
@@ -90,6 +90,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 			checkboxRef.current &&
 			!checkboxRef.current.contains(e.target as Node)
 		) {
+			console.log(name);
 			performToggle();
 		}
 	};
@@ -359,9 +360,9 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 							variants={backdropVariants}
 						/>
 
-						{/* Dialog */}
+						{/* Dialog - Fixed positioning for better mobile support */}
 						<motion.div
-							className="fixed z-50 top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[500px] p-6 rounded-lg shadow-lg w-[90%] max-h-[80vh] overflow-y-auto bg-white cursor-auto"
+							className="fixed z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[500px] p-6 rounded-lg shadow-lg w-[90%] max-h-[80vh] overflow-y-auto bg-white cursor-auto"
 							aria-modal="true"
 							aria-labelledby={`case-description-${id}`}
 							initial="hidden"
@@ -373,7 +374,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 						>
 							<button
 								type="button"
-								className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+								className="absolute top-3 left-3 text-gray-500 hover:text-gray-800"
 								onClick={closeModal}
 								onKeyDown={(e) => {
 									if (e.key === "Enter" || e.key === " ") {
@@ -411,7 +412,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 
 							<h3
 								id={`case-description-${id}`}
-								className="text-xl font-bold mb-4"
+								className="text-base font-bold mb-4 text-center"
 							>
 								{name}
 							</h3>
@@ -423,4 +424,3 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		</div>
 	);
 };
-

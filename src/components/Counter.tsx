@@ -6,11 +6,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCounterStore } from "@/store/useCounterStore";
 
 export const Counter: React.FC = () => {
-	const { amount, isAnimating, animationAmount, endAnimation } =
-		useCounterStore();
+	const {
+		amount,
+		isAnimating,
+		animationAmount,
+		endAnimation,
+		animationQueue,
+	} = useCounterStore();
+
 	const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	// Track if counter is visible
-	const [isCounterVisible, setIsCounterVisible] = useState(true);
+	const [isCounterVisible, setIsCounterVisible] = useState<boolean>(true);
 
 	// Track amount changes and update display value appropriately
 	useEffect(() => {
@@ -33,7 +38,7 @@ export const Counter: React.FC = () => {
 
 			// Set a new timeout to end the animation after specified duration
 			animationTimeoutRef.current = setTimeout(() => {
-				// End the animation
+				// End the animation and potentially start the next one
 				endAnimation();
 				// Updated value is already in amount, just make it visible
 				setIsCounterVisible(true);
@@ -84,7 +89,7 @@ export const Counter: React.FC = () => {
 				<AnimatePresence>
 					{isAnimating && animationAmount !== null && (
 						<motion.span
-							key="animation"
+							key={`animation-${Date.now()}`} // Ensure unique key for each animation
 							className="text-2xl font-medium text-[#198754] absolute right-0 top-0"
 							initial={{
 								scale: 2.5,
@@ -93,7 +98,9 @@ export const Counter: React.FC = () => {
 							animate={{
 								scale: 1,
 								x: 0,
-								transformOrigin: "right top",
+							}}
+							style={{
+								transformOrigin: "right top", // Set consistent transformOrigin via style
 							}}
 							transition={{
 								duration: 0.4,
@@ -108,6 +115,11 @@ export const Counter: React.FC = () => {
 						</motion.span>
 					)}
 				</AnimatePresence>
+				{animationQueue.length > 0 && (
+					<div className="absolute -top-1 -right-1 bg-gray-200 rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+						{animationQueue.length}
+					</div>
+				)}
 			</div>
 		</div>
 	);
