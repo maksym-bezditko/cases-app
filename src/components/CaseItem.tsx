@@ -4,16 +4,21 @@ import type React from "react";
 import type { Case } from "@/types/case";
 import { useCounterStore } from "@/store/useCounterStore";
 
-type CaseItemProps = Omit<Case, "id">;
+type CaseItemProps = Omit<Case, "id"> & {
+	id: number;
+};
 
 export const CaseItem: React.FC<CaseItemProps> = ({
+	id,
 	name,
 	close_date,
 	proof_needed,
 	description,
 	payout_amount,
 }) => {
-	const increment = useCounterStore((state) => state.increment);
+	const toggleCase = useCounterStore((state) => state.toggleCase);
+	const selectedCases = useCounterStore((state) => state.selectedCases);
+	const isSelected = selectedCases.includes(id);
 
 	// Calculate days left
 	const daysLeft = Math.max(
@@ -32,19 +37,21 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	});
 
 	const handleClick = () => {
-		increment(payout_amount);
+		toggleCase(id, payout_amount);
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
-			increment(payout_amount);
+			toggleCase(id, payout_amount);
 		}
 	};
 
 	return (
 		<div
-			className="w-full md:w-[370px] md:h-[197px] bg-gray-100 p-4 text-xs cursor-pointer flex flex-col relative text-left"
+			className={
+				"w-full md:w-[370px] md:h-[197px] bg-gray-100 p-4 text-xs cursor-pointer flex flex-col relative text-left "
+			}
 			onClick={handleClick}
 			onKeyDown={handleKeyDown}
 			aria-label={`Select case: ${name}`}
@@ -53,11 +60,36 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 			<div className="flex gap-3 flex-grow">
 				{/* Checkbox */}
 				<div className="flex-none">
-					<button
-						type="button"
-						className="w-5 h-5 border border-[#329a30] rounded-[2px] bg-white"
-						aria-label="Select case"
-					/>
+					<div
+						className={`w-5 h-5 border ${
+							isSelected
+								? "bg-[#329a30] border-[#329a30]"
+								: "bg-white border-[#329a30]"
+						} rounded-[2px] flex items-center justify-center`}
+						role="img"
+						aria-label={
+							isSelected ? "Selected case" : "Unselected case"
+						}
+					>
+						{isSelected && (
+							<svg
+								width="12"
+								height="9"
+								viewBox="0 0 12 9"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								aria-hidden="true"
+							>
+								<path
+									d="M1 4L4.5 7.5L11 1"
+									stroke="white"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								/>
+							</svg>
+						)}
+					</div>
 				</div>
 
 				{/* Case details */}

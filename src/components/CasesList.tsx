@@ -15,6 +15,7 @@ export const CasesList: FC = () => {
 			{CASES.map((caseItem) => (
 				<CaseItem
 					key={caseItem.id}
+					id={caseItem.id}
 					name={caseItem.name}
 					description={caseItem.description}
 					proof_needed={caseItem.proof_needed}
