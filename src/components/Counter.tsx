@@ -49,7 +49,7 @@ export const Counter: React.FC = () => {
 	}, [isAnimating, animationAmount, endAnimation]);
 
 	return (
-		<div className="sticky z-50 bg-white flex justify-end items-center gap-1 self-end">
+		<div className="sticky top-0 z-50 bg-white flex justify-end items-center gap-1 self-end py-2 px-4 w-full">
 			<span className="text-[10px] text-black">
 				Potential claim earnings
 			</span>
@@ -57,8 +57,6 @@ export const Counter: React.FC = () => {
 			<div className="relative h-8 flex items-center">
 				{/* Counter value container with minimum width to prevent layout shifts */}
 				<div className="flex justify-end min-w-[80px]">
-					{" "}
-					{/* Fixed minimum width */}
 					{/* Counter value - this is already updated in state but conditionally visible */}
 					<AnimatePresence mode="wait">
 						{isCounterVisible ? (
