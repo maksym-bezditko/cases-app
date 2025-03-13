@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Case } from "@/types/case";
 import { useCounterStore } from "@/store/useCounterStore";
 
@@ -22,6 +22,9 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	const isSelected = selectedCases.includes(id);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const checkboxRef = useRef<HTMLInputElement>(null);
+	const modalRef = useRef<HTMLDialogElement>(null);
+	// Add state for modal visibility
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	// Initialize audio element on client-side only
 	useEffect(() => {
@@ -79,6 +82,57 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 			performToggle();
 		}
 	};
+
+	// Function to truncate text
+	const truncateText = (text: string, maxLength: number) => {
+		if (text.length <= maxLength) return text;
+		return `${text.slice(0, maxLength)}...`;
+	};
+
+	// Function to handle More button click
+	const handleMoreClick = (e: React.MouseEvent) => {
+		e.stopPropagation(); // Prevent triggering the container click
+		setIsModalOpen(true);
+	};
+
+	// Control dialog open/close state with useEffect
+	useEffect(() => {
+		if (isModalOpen && modalRef.current) {
+			// Use the dialog method showModal to create a true modal experience
+			modalRef.current.showModal();
+			// Block scroll on body when modal is open
+			document.body.style.overflow = "hidden";
+		} else if (!isModalOpen && modalRef.current) {
+			modalRef.current.close();
+			// Restore scrolling when modal is closed
+			document.body.style.overflow = "";
+		}
+	}, [isModalOpen]);
+
+	// Function to close modal
+	const closeModal = () => {
+		setIsModalOpen(false);
+	};
+
+	const handleDialogClick = (e: React.MouseEvent) => {
+		if (e.target === modalRef.current) {
+			e.stopPropagation();
+			closeModal();
+		}
+	};
+
+	// Handle dialog keyboard events
+	const handleDialogKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "Escape") {
+			closeModal();
+		}
+	};
+
+	// Determine if description needs truncation
+	const isTruncated = description.length > 116;
+	const truncatedDescription = isTruncated
+		? truncateText(description, 116)
+		: description;
 
 	return (
 		<div
@@ -138,13 +192,28 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 					{/* Description */}
 					<div className="flex gap-2 mb-2">
 						<div>
-							<span>{description}</span>
-							<span
-								className="hidden text-xs px-1 py-0 underline"
-								aria-hidden="true"
-							>
-								More
-							</span>
+							<span>{truncatedDescription}</span>
+							{isTruncated && (
+								<button
+									type="button"
+									className="text-xs px-1 py-0 underline ml-1 text-blue-600 hover:text-blue-800"
+									onClick={handleMoreClick}
+									onKeyDown={(e) => {
+										if (
+											e.key === "Enter" ||
+											e.key === " "
+										) {
+											e.preventDefault();
+											handleMoreClick(
+												e as unknown as React.MouseEvent
+											);
+										}
+									}}
+									aria-label="Show more details about this case"
+								>
+									More
+								</button>
+							)}
 						</div>
 					</div>
 
@@ -234,6 +303,62 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 					</div>
 				</div>
 			</div>
+
+			{/* Modal for full description */}
+			<dialog
+				ref={modalRef}
+				onClick={handleDialogClick}
+				onKeyDown={handleDialogKeyDown}
+				className="max-w-[500px] p-6 rounded-lg shadow-lg w-[90%] max-h-[80vh] overflow-y-auto mx-auto mt-10 [&::backdrop]:bg-black/70"
+				aria-modal="true"
+				aria-labelledby={`case-description-${id}`}
+			>
+				<button
+					type="button"
+					className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+					onClick={closeModal}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							closeModal();
+						}
+					}}
+					aria-label="Close modal"
+				>
+					<svg
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-hidden="true"
+					>
+						<title>Close</title>
+						<path
+							d="M18 6L6 18"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
+						<path
+							d="M6 6L18 18"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
+					</svg>
+				</button>
+
+				<h3
+					id={`case-description-${id}`}
+					className="text-xl font-bold mb-4"
+				>
+					{name}
+				</h3>
+				<p className="text-sm mb-4">{description}</p>
+			</dialog>
 		</div>
 	);
 };
