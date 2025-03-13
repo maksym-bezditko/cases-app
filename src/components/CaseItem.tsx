@@ -77,6 +77,14 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 			!checkboxRef.current.contains(e.target as Node)
 		) {
 			console.log(name);
+			console.log("Case clicked:", {
+				caseId: id,
+				caseName: name,
+				timestamp: new Date().toISOString(),
+				payoutAmount: payout_amount,
+				daysLeft,
+				isSelected,
+			});
 			performToggle();
 		}
 	};
@@ -95,6 +103,12 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 
 	const handleMoreClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
+		console.log("More button clicked:", {
+			caseId: id,
+			caseName: name,
+			timestamp: new Date().toISOString(),
+			description: description.length,
+		});
 		setIsModalOpen(true);
 		document.body.style.overflow = "hidden";
 	};
