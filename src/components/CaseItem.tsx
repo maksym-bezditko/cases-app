@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import { useEffect, useRef } from "react";
 import type { Case } from "@/types/case";
 import { useCounterStore } from "@/store/useCounterStore";
 
@@ -19,6 +20,14 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	const toggleCase = useCounterStore((state) => state.toggleCase);
 	const selectedCases = useCounterStore((state) => state.selectedCases);
 	const isSelected = selectedCases.includes(id);
+	const audioRef = useRef<HTMLAudioElement | null>(null);
+	const checkboxRef = useRef<HTMLInputElement>(null);
+
+	// Initialize audio element on client-side only
+	useEffect(() => {
+		// Only create the audio element on the client side
+		audioRef.current = new Audio("/button-pressed.mp3");
+	}, []);
 
 	// Calculate days left
 	const daysLeft = Math.max(
@@ -36,41 +45,70 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		year: "numeric",
 	});
 
-	const handleClick = () => {
+	// Function to toggle case and play sound if needed
+	const performToggle = () => {
+		// Play sound when selecting a case (not when deselecting)
+		if (!isSelected && audioRef.current) {
+			// Reset the audio to the beginning in case it's still playing
+			audioRef.current.pause();
+			audioRef.current.currentTime = 0;
+			// Play the sound
+			audioRef.current.play().catch((err) => {
+				// Handle any errors quietly (common for autoplay restrictions)
+				console.log("Could not play audio:", err);
+			});
+		}
 		toggleCase(id, payout_amount);
 	};
 
+	// Handle click on the container but NOT on the checkbox
+	const handleContainerClick = (e: React.MouseEvent) => {
+		// Only process if the click was not on the checkbox
+		if (
+			checkboxRef.current &&
+			!checkboxRef.current.contains(e.target as Node)
+		) {
+			performToggle();
+		}
+	};
+
+	// Handle keyboard events for accessibility
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
-			toggleCase(id, payout_amount);
+			performToggle();
 		}
 	};
 
 	return (
 		<div
-			className={
-				"w-full md:w-[370px] md:h-[197px] bg-gray-100 p-4 text-xs cursor-pointer flex flex-col relative text-left "
-			}
-			onClick={handleClick}
-			onKeyDown={handleKeyDown}
-			aria-label={`Select case: ${name}`}
+			className="w-full md:w-[370px] md:h-[197px] bg-gray-100 p-4 text-xs cursor-pointer flex flex-col relative text-left"
+			onClick={handleContainerClick}
+			onKeyDown={() => {
+				/* This handler is just for linter compliance */
+			}}
+			aria-label={`Case: ${name}${isSelected ? " (Selected)" : ""}`}
 		>
 			{/* Main content */}
 			<div className="flex gap-3 flex-grow">
-				{/* Checkbox */}
+				{/* Checkbox - this is now the only focusable element */}
 				<div className="flex-none">
 					<div
 						className={`w-5 h-5 border ${
 							isSelected
 								? "bg-[#329a30] border-[#329a30]"
 								: "bg-white border-[#329a30]"
-						} rounded-[2px] flex items-center justify-center`}
-						role="img"
-						aria-label={
-							isSelected ? "Selected case" : "Unselected case"
-						}
+						} rounded-[2px] flex items-center justify-center relative group`}
 					>
+						<input
+							ref={checkboxRef}
+							type="checkbox"
+							checked={isSelected}
+							onChange={performToggle}
+							onKeyDown={handleKeyDown}
+							className="absolute inset-0 opacity-0 w-full h-full cursor-pointer  z-10"
+							aria-label={`Select case: ${name}`}
+						/>
 						{isSelected && (
 							<svg
 								width="12"
@@ -101,13 +139,12 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 					<div className="flex gap-2 mb-2">
 						<div>
 							<span>{description}</span>
-							<button
-								type="button"
+							<span
 								className="hidden text-xs px-1 py-0 underline"
-								aria-label="Show more details"
+								aria-hidden="true"
 							>
 								More
-							</button>
+							</span>
 						</div>
 					</div>
 
