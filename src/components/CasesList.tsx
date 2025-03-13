@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { CaseItem } from "./CaseItem";
-import casesData from "@/data/cases.json";
-import type { Case, CaseJSON } from "@/types/case";
+import casesData from "../data/cases.json";
+import type { Case, CaseJSON } from "../types/case";
 
 // Convert string dates from JSON to Date objects
 const CASES: Case[] = (casesData as CaseJSON[]).map((caseItem) => ({

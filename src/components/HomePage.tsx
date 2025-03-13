@@ -1,6 +1,6 @@
 import type React from "react";
-import { Counter } from "@/components/Counter";
-import { CasesListWrapper } from "@/components/CasesListWrapper";
+import { Counter } from "./Counter";
+import { CasesListWrapper } from "./CasesListWrapper";
 
 export const HomePage: React.FC = () => {
 	return (

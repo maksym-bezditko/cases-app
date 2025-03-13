@@ -1,0 +1,122 @@
+[
+	{
+		"id": 1,
+		"name": "Apple",
+		"description": "Owned any model First Generation, Series 1/2/3 Watch and reported battery swelling issues.",
+		"proof_needed": false,
+		"close_date": "2025-04-10",
+		"payout_amount": 20
+	},
+	{
+		"id": 2,
+		"name": "TikTok",
+		"description": "Used TikTok before Sept 30, 2023 while under age 18 (or parent of minor who used TikTok).",
+		"proof_needed": true,
+		"close_date": "2024-12-15",
+		"payout_amount": 36
+	},
+	{
+		"id": 3,
+		"name": "Equifax",
+		"description": "Had personal information exposed in the 2017 Equifax data breach.",
+		"proof_needed": false,
+		"close_date": "2024-11-22",
+		"payout_amount": 125
+	},
+	{
+		"id": 4,
+		"name": "Facebook Privacy",
+		"description": "Facebook users in Illinois whose face appeared in a photo uploaded between June 7, 2011 and August 19, 2020.",
+		"proof_needed": true,
+		"close_date": "2024-09-30",
+		"payout_amount": 342
+	},
+	{
+		"id": 5,
+		"name": "Hyundai/Kia Engine",
+		"description": "Owned or leased certain Hyundai or Kia vehicles with 2.0L or 2.4L engines manufactured between 2011-2019.",
+		"proof_needed": true,
+		"close_date": "2025-01-15",
+		"payout_amount": 1250
+	},
+	{
+		"id": 6,
+		"name": "Roundup Weedkiller",
+		"description": "Used Roundup products and later diagnosed with Non-Hodgkin's Lymphoma or other specified cancers.",
+		"proof_needed": true,
+		"close_date": "2024-08-12",
+		"payout_amount": 5000
+	},
+	{
+		"id": 7,
+		"name": "T-Mobile Data Breach",
+		"description": "T-Mobile customer affected by the August 2021 data breach exposing personal information.",
+		"proof_needed": false,
+		"close_date": "2025-03-24",
+		"payout_amount": 25
+	},
+	{
+		"id": 8,
+		"name": "Neutrogena Sunscreen",
+		"description": "Purchased Neutrogena or Aveeno sunscreen products between May 2017 and April 2021.",
+		"proof_needed": false,
+		"close_date": "2024-10-04",
+		"payout_amount": 10
+	},
+	{
+		"id": 9,
+		"name": "Capital One Data Breach",
+		"description": "Capital One customers whose information was compromised in the 2019 data breach.",
+		"proof_needed": false,
+		"close_date": "2025-02-28",
+		"payout_amount": 25
+	},
+	{
+		"id": 10,
+		"name": "Robinhood Trading Restrictions",
+		"description": "Robinhood users affected by the January 2021 trading restrictions on certain securities.",
+		"proof_needed": true,
+		"close_date": "2024-12-31",
+		"payout_amount": 15
+	},
+	{
+		"id": 11,
+		"name": "Uber Driver Misclassification",
+		"description": "Worked as an Uber driver in California between February 2019 and December 2020.",
+		"proof_needed": true,
+		"close_date": "2024-11-15",
+		"payout_amount": 1100
+	},
+	{
+		"id": 12,
+		"name": "LG Refrigerator Defect",
+		"description": "Owned an LG refrigerator manufactured between January 2014 and December 2017 that experienced cooling issues.",
+		"proof_needed": true,
+		"close_date": "2025-05-30",
+		"payout_amount": 450
+	},
+	{
+		"id": 13,
+		"name": "Philips CPAP/BiPAP Recall",
+		"description": "Were you affected by the Philips Respironics recall of CPAP, BiPAP, and ventilator devices? The recall, announced in June 2021, affected millions of devices containing polyester-based polyurethane (PE-PUR) sound abatement foam that could degrade and release potentially harmful particles and gases. Users who inhaled these substances may have experienced headaches, irritation, inflammation, respiratory issues, or potentially more serious health problems. Eligible claimants include anyone who used one of the affected devices (including DreamStation, SystemOne, Trilogy, A-Series BiPAP, and others) between 2009 and June 2021, and who subsequently experienced any adverse health effects that may be linked to foam degradation or off-gassing. This settlement covers both the cost of device replacement and potential compensation for medical expenses and personal injury damages.",
+		"proof_needed": true,
+		"close_date": "2025-06-15",
+		"payout_amount": 1500
+	},
+	{
+		"id": 14,
+		"name": "Monsanto PCB Contamination",
+		"description": "This class action settlement involves Monsanto's production and distribution of polychlorinated biphenyls (PCBs) which have contaminated waterways and ecosystems across the United States for decades. PCBs were manufactured by Monsanto from the 1930s until they were banned in 1979, during which time they were widely used in industrial and commercial applications including electrical equipment, hydraulic fluids, plasticizers, and carbonless copy paper. Despite internal evidence suggesting Monsanto knew of PCBs' potential environmental and health hazards as early as the 1960s, the company continued production. The settlement addresses claims that Monsanto failed to adequately warn about PCB dangers and improperly disposed of PCB-containing materials, resulting in widespread contamination of soil, water, and wildlife. Eligible claimants include individuals who lived near contaminated waterways for at least one year between January 1, 1970 and December 31, 2010, and who can demonstrate elevated PCB levels in their blood or who have been diagnosed with specific diseases linked to PCB exposure, including non-Hodgkin's lymphoma, melanoma, thyroid disease, or reproductive problems.",
+		"proof_needed": true,
+		"close_date": "2025-07-22",
+		"payout_amount": 3750
+	},
+	{
+		"id": 15,
+		"name": "PFAS Water Contamination",
+		"description": "This settlement addresses widespread water contamination caused by per- and polyfluoroalkyl substances (PFAS), often called 'forever chemicals' due to their persistence in the environment and human body. The class action involves multiple chemical manufacturers including DuPont, 3M, and Chemours, who produced PFAS compounds used in numerous consumer products such as non-stick cookware, water-resistant clothing, food packaging, and firefighting foam. These chemicals have been detected in drinking water systems serving millions of Americans, particularly near manufacturing facilities, military bases, and airports where firefighting foam containing PFAS was regularly used. Scientific research has linked PFAS exposure to several health concerns including increased cholesterol levels, changes in liver enzymes, decreased vaccine response in children, increased risk of high blood pressure in pregnant women, and increased risk of certain cancers including kidney and testicular cancer. The settlement covers individuals who resided in affected water districts for at least one year between January 1, 1980 and December 31, 2018, where PFAS levels in public water supplies exceeded 70 parts per trillion (the EPA's former health advisory level) or who can demonstrate elevated PFAS levels in their blood and a diagnosis of a related medical condition.",
+		"proof_needed": true,
+		"close_date": "2025-03-30",
+		"payout_amount": 2250
+	}
+]

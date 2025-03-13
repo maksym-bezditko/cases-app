@@ -2,8 +2,8 @@
 
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import type { Case } from "@/types/case";
-import { useCounterStore } from "@/store/useCounterStore";
+import type { Case } from "../types/case";
+import { useCounterStore } from "../store/useCounterStore";
 import { motion, AnimatePresence } from "framer-motion";
 
 type CaseItemProps = Omit<Case, "id"> & {

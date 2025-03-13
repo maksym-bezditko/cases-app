@@ -3,7 +3,7 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCounterStore } from "@/store/useCounterStore";
+import { useCounterStore } from "../store/useCounterStore";
 
 export const Counter: React.FC = () => {
 	const {
@@ -14,7 +14,9 @@ export const Counter: React.FC = () => {
 		animationQueue,
 	} = useCounterStore();
 
-	const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+		null
+	);
 	const [isCounterVisible, setIsCounterVisible] = useState<boolean>(true);
 
 	useEffect(() => {

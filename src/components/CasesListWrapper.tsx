@@ -1,5 +1,5 @@
 import type React from "react";
-import { CasesList } from "@/components/CasesList";
+import { CasesList } from "./CasesList";
 export const CasesListWrapper: React.FC = () => {
 	return (
 		<div className="mt-12  text-left md:w-[760px] flex flex-col">
