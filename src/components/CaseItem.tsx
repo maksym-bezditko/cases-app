@@ -4,6 +4,7 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import type { Case } from "@/types/case";
 import { useCounterStore } from "@/store/useCounterStore";
+import { motion, AnimatePresence } from "framer-motion";
 
 type CaseItemProps = Omit<Case, "id"> & {
 	id: number;
@@ -22,7 +23,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	const isSelected = selectedCases.includes(id);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const checkboxRef = useRef<HTMLInputElement>(null);
-	const modalRef = useRef<HTMLDialogElement>(null);
+	const backdropRef = useRef<HTMLDivElement>(null);
 	// Add state for modal visibility
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -31,6 +32,24 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		// Only create the audio element on the client side
 		audioRef.current = new Audio("/button-pressed.mp3");
 	}, []);
+
+	useEffect(() => {
+		const handleEscKey = (e: KeyboardEvent) => {
+			if (e.key === "Escape" && isModalOpen) {
+				closeModal();
+			}
+		};
+
+		// Add event listener when modal is open
+		if (isModalOpen) {
+			document.addEventListener("keydown", handleEscKey);
+		}
+
+		// Clean up event listener when modal closes or component unmounts
+		return () => {
+			document.removeEventListener("keydown", handleEscKey);
+		};
+	}, [isModalOpen]);
 
 	// Calculate days left
 	const daysLeft = Math.max(
@@ -93,29 +112,19 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	const handleMoreClick = (e: React.MouseEvent) => {
 		e.stopPropagation(); // Prevent triggering the container click
 		setIsModalOpen(true);
+		// Block scroll on body when modal is open
+		document.body.style.overflow = "hidden";
 	};
-
-	// Control dialog open/close state with useEffect
-	useEffect(() => {
-		if (isModalOpen && modalRef.current) {
-			// Use the dialog method showModal to create a true modal experience
-			modalRef.current.showModal();
-			// Block scroll on body when modal is open
-			document.body.style.overflow = "hidden";
-		} else if (!isModalOpen && modalRef.current) {
-			modalRef.current.close();
-			// Restore scrolling when modal is closed
-			document.body.style.overflow = "";
-		}
-	}, [isModalOpen]);
 
 	// Function to close modal
 	const closeModal = () => {
 		setIsModalOpen(false);
+		// Restore scrolling when modal is closed
+		// We'll let this happen after animation in the AnimatePresence onExitComplete
 	};
 
-	const handleDialogClick = (e: React.MouseEvent) => {
-		if (e.target === modalRef.current) {
+	const handleBackdropClick = (e: React.MouseEvent) => {
+		if (backdropRef.current === e.target) {
 			e.stopPropagation();
 			closeModal();
 		}
@@ -133,6 +142,32 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	const truncatedDescription = isTruncated
 		? truncateText(description, 116)
 		: description;
+
+	// Animation variants for the dialog
+	const dialogVariants = {
+		hidden: {
+			opacity: 0,
+			y: 20,
+			transition: {
+				duration: 0.25,
+				ease: "easeIn",
+			},
+		},
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				duration: 0.3,
+				ease: "easeOut",
+			},
+		},
+	};
+
+	// Animation variants for the backdrop
+	const backdropVariants = {
+		hidden: { opacity: 0 },
+		visible: { opacity: 1 },
+	};
 
 	return (
 		<div
@@ -160,7 +195,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 							checked={isSelected}
 							onChange={performToggle}
 							onKeyDown={handleKeyDown}
-							className="absolute inset-0 opacity-0 w-full h-full cursor-pointer  z-10"
+							className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
 							aria-label={`Select case: ${name}`}
 						/>
 						{isSelected && (
@@ -196,7 +231,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 							{isTruncated && (
 								<button
 									type="button"
-									className="text-xs px-1 py-0 underline ml-1 text-blue-600 hover:text-blue-800"
+									className="text-xs px-1 py-0 underline cursor-pointer"
 									onClick={handleMoreClick}
 									onKeyDown={(e) => {
 										if (
@@ -304,61 +339,88 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 				</div>
 			</div>
 
-			{/* Modal for full description */}
-			<dialog
-				ref={modalRef}
-				onClick={handleDialogClick}
-				onKeyDown={handleDialogKeyDown}
-				className="max-w-[500px] p-6 rounded-lg shadow-lg w-[90%] max-h-[80vh] overflow-y-auto mx-auto mt-10 [&::backdrop]:bg-black/70"
-				aria-modal="true"
-				aria-labelledby={`case-description-${id}`}
+			{/* Modal with Framer Motion for animations */}
+			<AnimatePresence
+				onExitComplete={() => {
+					// Restore scrolling after exit animation is complete
+					document.body.style.overflow = "";
+				}}
 			>
-				<button
-					type="button"
-					className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-					onClick={closeModal}
-					onKeyDown={(e) => {
-						if (e.key === "Enter" || e.key === " ") {
-							e.preventDefault();
-							closeModal();
-						}
-					}}
-					aria-label="Close modal"
-				>
-					<svg
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-						aria-hidden="true"
-					>
-						<title>Close</title>
-						<path
-							d="M18 6L6 18"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
+				{isModalOpen && (
+					<>
+						{/* Backdrop */}
+						<motion.div
+							ref={backdropRef}
+							className="fixed inset-0 bg-black/70 z-50 cursor-auto"
+							onClick={handleBackdropClick}
+							initial="hidden"
+							animate="visible"
+							exit="hidden"
+							variants={backdropVariants}
 						/>
-						<path
-							d="M6 6L18 18"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						/>
-					</svg>
-				</button>
 
-				<h3
-					id={`case-description-${id}`}
-					className="text-xl font-bold mb-4"
-				>
-					{name}
-				</h3>
-				<p className="text-sm mb-4">{description}</p>
-			</dialog>
+						{/* Dialog */}
+						<motion.div
+							className="fixed z-50 top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[500px] p-6 rounded-lg shadow-lg w-[90%] max-h-[80vh] overflow-y-auto bg-white cursor-auto"
+							aria-modal="true"
+							aria-labelledby={`case-description-${id}`}
+							initial="hidden"
+							animate="visible"
+							exit="hidden"
+							variants={dialogVariants}
+							onKeyDown={handleDialogKeyDown}
+							onClick={(e) => e.stopPropagation()}
+						>
+							<button
+								type="button"
+								className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+								onClick={closeModal}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" || e.key === " ") {
+										e.preventDefault();
+										closeModal();
+									}
+								}}
+								aria-label="Close modal"
+							>
+								<svg
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									aria-hidden="true"
+								>
+									<title>Close</title>
+									<path
+										d="M18 6L6 18"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+									<path
+										d="M6 6L18 18"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+								</svg>
+							</button>
+
+							<h3
+								id={`case-description-${id}`}
+								className="text-xl font-bold mb-4"
+							>
+								{name}
+							</h3>
+							<p className="text-sm mb-4">{description}</p>
+						</motion.div>
+					</>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 };
+
