@@ -71,25 +71,36 @@ export const useCounterStore = create<CounterState>((set, get) => ({
 	endAnimation: () =>
 		set((state) => {
 			if (state.animationQueue.length > 0) {
-				get().processNextAnimation();
-				return { isAnimating: true };
+				const [nextAnimation, ...remainingQueue] = state.animationQueue;
+				return {
+					isAnimating: true,
+					animationAmount: nextAnimation.amount,
+					animationQueue: remainingQueue,
+				};
 			}
 
 			return {
 				isAnimating: false,
 				animationAmount: null,
+				animationQueue: [],
 			};
 		}),
 
 	processNextAnimation: () => {
 		const state = get();
-		if (state.animationQueue.length === 0) return;
+		if (state.animationQueue.length === 0) {
+			set({
+				isAnimating: false,
+				animationAmount: null,
+			});
+			return;
+		}
 
 		const [nextAnimation, ...remainingQueue] = state.animationQueue;
-
 		set({
 			animationQueue: remainingQueue,
 			animationAmount: nextAnimation.amount,
+			isAnimating: true,
 		});
 	},
 }));

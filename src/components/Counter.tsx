@@ -97,6 +97,10 @@ export const Counter: React.FC = () => {
 								ease: "easeInOut",
 							}}
 							onAnimationComplete={() => {
+								if (animationTimeoutRef.current) {
+									clearTimeout(animationTimeoutRef.current);
+								}
+								endAnimation();
 								setIsCounterVisible(true);
 							}}
 						>
