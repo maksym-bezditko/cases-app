@@ -1,0 +1,98 @@
+[
+	{
+		"id": 1,
+		"name": "Apple",
+		"description": "Owned any model First Generation, Series 1/2/3 Watch and reported battery swelling issues.",
+		"proof_needed": false,
+		"close_date": "2025-04-10",
+		"payout_amount": "$20"
+	},
+	{
+		"id": 2,
+		"name": "TikTok",
+		"description": "Used TikTok before Sept 30, 2023 while under age 18 (or parent of minor who used TikTok).",
+		"proof_needed": true,
+		"close_date": "2024-12-15",
+		"payout_amount": "$36"
+	},
+	{
+		"id": 3,
+		"name": "Equifax",
+		"description": "Had personal information exposed in the 2017 Equifax data breach.",
+		"proof_needed": false,
+		"close_date": "2024-11-22",
+		"payout_amount": "$125"
+	},
+	{
+		"id": 4,
+		"name": "Facebook Privacy",
+		"description": "Facebook users in Illinois whose face appeared in a photo uploaded between June 7, 2011 and August 19, 2020.",
+		"proof_needed": true,
+		"close_date": "2024-09-30",
+		"payout_amount": "$342"
+	},
+	{
+		"id": 5,
+		"name": "Hyundai/Kia Engine",
+		"description": "Owned or leased certain Hyundai or Kia vehicles with 2.0L or 2.4L engines manufactured between 2011-2019.",
+		"proof_needed": true,
+		"close_date": "2025-01-15",
+		"payout_amount": "$1250"
+	},
+	{
+		"id": 6,
+		"name": "Roundup Weedkiller",
+		"description": "Used Roundup products and later diagnosed with Non-Hodgkin's Lymphoma or other specified cancers.",
+		"proof_needed": true,
+		"close_date": "2024-08-12",
+		"payout_amount": "$5000"
+	},
+	{
+		"id": 7,
+		"name": "T-Mobile Data Breach",
+		"description": "T-Mobile customer affected by the August 2021 data breach exposing personal information.",
+		"proof_needed": false,
+		"close_date": "2025-03-24",
+		"payout_amount": "$25"
+	},
+	{
+		"id": 8,
+		"name": "Neutrogena Sunscreen",
+		"description": "Purchased Neutrogena or Aveeno sunscreen products between May 2017 and April 2021.",
+		"proof_needed": false,
+		"close_date": "2024-10-04",
+		"payout_amount": "$10"
+	},
+	{
+		"id": 9,
+		"name": "Capital One Data Breach",
+		"description": "Capital One customers whose information was compromised in the 2019 data breach.",
+		"proof_needed": false,
+		"close_date": "2025-02-28",
+		"payout_amount": "$25"
+	},
+	{
+		"id": 10,
+		"name": "Robinhood Trading Restrictions",
+		"description": "Robinhood users affected by the January 2021 trading restrictions on certain securities.",
+		"proof_needed": true,
+		"close_date": "2024-12-31",
+		"payout_amount": "$15"
+	},
+	{
+		"id": 11,
+		"name": "Uber Driver Misclassification",
+		"description": "Worked as an Uber driver in California between February 2019 and December 2020.",
+		"proof_needed": true,
+		"close_date": "2024-11-15",
+		"payout_amount": "$1100"
+	},
+	{
+		"id": 12,
+		"name": "LG Refrigerator Defect",
+		"description": "Owned an LG refrigerator manufactured between January 2014 and December 2017 that experienced cooling issues.",
+		"proof_needed": true,
+		"close_date": "2025-05-30",
+		"payout_amount": "$450"
+	}
+]
