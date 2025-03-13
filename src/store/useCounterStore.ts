@@ -45,7 +45,7 @@ export const useCounterStore = create<CounterState>((set) => ({
 			};
 		}),
 	startAnimation: (amount: number) =>
-		set((state) => ({
+		set(() => ({
 			isAnimating: true,
 			animationAmount: amount,
 			// Note: amount is already updated prior to this
