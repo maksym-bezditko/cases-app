@@ -12,6 +12,6 @@ export interface CaseJSON {
 	name: string;
 	description: string;
 	proof_needed: boolean;
-	close_date: string; // In JSON, dates are stored as strings
+	close_date: string;
 	payout_amount: number;
 }

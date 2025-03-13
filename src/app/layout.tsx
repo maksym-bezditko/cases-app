@@ -10,8 +10,8 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-	title: "Clean App",
-	description: "A clean, simplified app structure",
+	title: "Cases App",
+	description: "Cases app description",
 };
 
 export default function RootLayout({

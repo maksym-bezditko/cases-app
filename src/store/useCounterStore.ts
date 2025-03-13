@@ -35,7 +35,6 @@ export const useCounterStore = create<CounterState>((set, get) => ({
 			const isSelected = state.selectedCases.includes(caseId);
 
 			if (isSelected) {
-				// If already selected, deselect it - no animation when deselecting
 				return {
 					selectedCases: state.selectedCases.filter(
 						(id) => id !== caseId
@@ -44,9 +43,7 @@ export const useCounterStore = create<CounterState>((set, get) => ({
 				};
 			}
 
-			// If not selected and we're selecting for the first time:
 			if (state.isAnimating) {
-				// If an animation is already running, queue this one
 				return {
 					selectedCases: [...state.selectedCases, caseId],
 					amount: state.amount + amount,
@@ -57,7 +54,6 @@ export const useCounterStore = create<CounterState>((set, get) => ({
 				};
 			}
 
-			// No animation running, start one immediately
 			return {
 				selectedCases: [...state.selectedCases, caseId],
 				amount: state.amount + amount,
@@ -74,14 +70,11 @@ export const useCounterStore = create<CounterState>((set, get) => ({
 
 	endAnimation: () =>
 		set((state) => {
-			// Check if there are more animations in the queue
 			if (state.animationQueue.length > 0) {
-				// Process the next animation automatically
 				get().processNextAnimation();
-				return { isAnimating: true }; // Keep animation state on
+				return { isAnimating: true };
 			}
 
-			// No more animations, turn off animation state
 			return {
 				isAnimating: false,
 				animationAmount: null,
@@ -92,10 +85,8 @@ export const useCounterStore = create<CounterState>((set, get) => ({
 		const state = get();
 		if (state.animationQueue.length === 0) return;
 
-		// Get the next animation from the queue
 		const [nextAnimation, ...remainingQueue] = state.animationQueue;
 
-		// Start the next animation
 		set({
 			animationQueue: remainingQueue,
 			animationAmount: nextAnimation.amount,

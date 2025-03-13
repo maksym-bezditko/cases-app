@@ -24,12 +24,9 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const checkboxRef = useRef<HTMLInputElement>(null);
 	const backdropRef = useRef<HTMLDivElement>(null);
-	// Add state for modal visibility
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-	// Initialize audio element on client-side only
 	useEffect(() => {
-		// Only create the audio element on the client side
 		audioRef.current = new Audio("/button-pressed.mp3");
 	}, []);
 
@@ -40,18 +37,15 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 			}
 		};
 
-		// Add event listener when modal is open
 		if (isModalOpen) {
 			document.addEventListener("keydown", handleEscKey);
 		}
 
-		// Clean up event listener when modal closes or component unmounts
 		return () => {
 			document.removeEventListener("keydown", handleEscKey);
 		};
 	}, [isModalOpen]);
 
-	// Calculate days left
 	const daysLeft = Math.max(
 		0,
 		Math.floor(
@@ -60,32 +54,24 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		)
 	);
 
-	// Format date for display
 	const formattedDate = close_date.toLocaleDateString("en-US", {
 		month: "long",
 		day: "numeric",
 		year: "numeric",
 	});
 
-	// Function to toggle case and play sound if needed
 	const performToggle = () => {
-		// Play sound when selecting a case (not when deselecting)
 		if (!isSelected && audioRef.current) {
-			// Reset the audio to the beginning in case it's still playing
 			audioRef.current.pause();
 			audioRef.current.currentTime = 0;
-			// Play the sound
 			audioRef.current.play().catch((err) => {
-				// Handle any errors quietly (common for autoplay restrictions)
 				console.log("Could not play audio:", err);
 			});
 		}
 		toggleCase(id, payout_amount);
 	};
 
-	// Handle click on the container but NOT on the checkbox
 	const handleContainerClick = (e: React.MouseEvent) => {
-		// Only process if the click was not on the checkbox
 		if (
 			checkboxRef.current &&
 			!checkboxRef.current.contains(e.target as Node)
@@ -95,7 +81,6 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		}
 	};
 
-	// Handle keyboard events for accessibility
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
@@ -103,25 +88,19 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		}
 	};
 
-	// Function to truncate text
 	const truncateText = (text: string, maxLength: number) => {
 		if (text.length <= maxLength) return text;
 		return `${text.slice(0, maxLength)}...`;
 	};
 
-	// Function to handle More button click
 	const handleMoreClick = (e: React.MouseEvent) => {
-		e.stopPropagation(); // Prevent triggering the container click
+		e.stopPropagation();
 		setIsModalOpen(true);
-		// Block scroll on body when modal is open
 		document.body.style.overflow = "hidden";
 	};
 
-	// Function to close modal
 	const closeModal = () => {
 		setIsModalOpen(false);
-		// Restore scrolling when modal is closed
-		// We'll let this happen after animation in the AnimatePresence onExitComplete
 	};
 
 	const handleBackdropClick = (e: React.MouseEvent) => {
@@ -131,20 +110,17 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		}
 	};
 
-	// Handle dialog keyboard events
 	const handleDialogKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "Escape") {
 			closeModal();
 		}
 	};
 
-	// Determine if description needs truncation
 	const isTruncated = description.length > 116;
 	const truncatedDescription = isTruncated
 		? truncateText(description, 116)
 		: description;
 
-	// Animation variants for the dialog
 	const dialogVariants = {
 		hidden: {
 			opacity: 0,
@@ -164,7 +140,6 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		},
 	};
 
-	// Animation variants for the backdrop
 	const backdropVariants = {
 		hidden: { opacity: 0 },
 		visible: { opacity: 1 },
@@ -179,9 +154,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 			}}
 			aria-label={`Case: ${name}${isSelected ? " (Selected)" : ""}`}
 		>
-			{/* Main content */}
 			<div className="flex gap-3 flex-grow">
-				{/* Checkbox - this is now the only focusable element */}
 				<div className="flex-none">
 					<div
 						className={`w-5 h-5 border ${
@@ -220,12 +193,9 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 					</div>
 				</div>
 
-				{/* Case details */}
 				<div className="flex-1">
-					{/* Case name */}
 					<div className="font-medium text-xl mb-2.5">{name}</div>
 
-					{/* Description */}
 					<div className="flex gap-2 mb-2">
 						<div>
 							<span>{truncatedDescription}</span>
@@ -253,7 +223,6 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 						</div>
 					</div>
 
-					{/* Proof needed */}
 					<div className="flex gap-2 items-center">
 						{!proof_needed && (
 							<>
@@ -319,9 +288,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 				</div>
 			</div>
 
-			{/* Footer */}
 			<div className="flex justify-between items-end mt-4">
-				{/* Days left counter */}
 				<div>
 					<div className="text-sm font-bold px-4 py-2.5 bg-gray-200 rounded-full inline-block">
 						<span>{daysLeft}</span> day
@@ -329,7 +296,6 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 					</div>
 				</div>
 
-				{/* Payout amount */}
 				<div>
 					<div className="text-base">
 						<span className="text-[10px] align-super pr-1">
@@ -340,16 +306,13 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 				</div>
 			</div>
 
-			{/* Modal with Framer Motion for animations */}
 			<AnimatePresence
 				onExitComplete={() => {
-					// Restore scrolling after exit animation is complete
 					document.body.style.overflow = "";
 				}}
 			>
 				{isModalOpen && (
 					<>
-						{/* Backdrop */}
 						<motion.div
 							ref={backdropRef}
 							className="fixed inset-0 bg-black/70 z-50 cursor-auto"
@@ -360,7 +323,6 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 							variants={backdropVariants}
 						/>
 
-						{/* Dialog - Fixed positioning for better mobile support */}
 						<motion.div
 							className="fixed z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[500px] p-6 rounded-lg shadow-lg w-[90%] max-h-[80vh] overflow-y-auto bg-white cursor-auto"
 							aria-modal="true"

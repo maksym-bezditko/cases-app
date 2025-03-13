@@ -17,35 +17,26 @@ export const Counter: React.FC = () => {
 	const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const [isCounterVisible, setIsCounterVisible] = useState<boolean>(true);
 
-	// Track amount changes and update display value appropriately
 	useEffect(() => {
-		// If not animating, immediately show the current amount
 		if (!isAnimating) {
 			setIsCounterVisible(true);
 		} else {
-			// If animation starts, hide the counter first
 			setIsCounterVisible(false);
 		}
 	}, [isAnimating]);
 
-	// Set up the animation timeout
 	useEffect(() => {
 		if (isAnimating && animationAmount !== null) {
-			// Clear any existing timeout
 			if (animationTimeoutRef.current) {
 				clearTimeout(animationTimeoutRef.current);
 			}
 
-			// Set a new timeout to end the animation after specified duration
 			animationTimeoutRef.current = setTimeout(() => {
-				// End the animation and potentially start the next one
 				endAnimation();
-				// Updated value is already in amount, just make it visible
 				setIsCounterVisible(true);
 			}, 400);
 		}
 
-		// Cleanup on unmount
 		return () => {
 			if (animationTimeoutRef.current) {
 				clearTimeout(animationTimeoutRef.current);
@@ -60,9 +51,7 @@ export const Counter: React.FC = () => {
 			</span>
 
 			<div className="relative h-8 flex items-center">
-				{/* Counter value container with minimum width to prevent layout shifts */}
 				<div className="flex justify-end min-w-[80px]">
-					{/* Counter value - this is already updated in state but conditionally visible */}
 					<AnimatePresence mode="wait">
 						{isCounterVisible ? (
 							<motion.span
@@ -85,29 +74,27 @@ export const Counter: React.FC = () => {
 					</AnimatePresence>
 				</div>
 
-				{/* Animation for the increment amount */}
 				<AnimatePresence>
 					{isAnimating && animationAmount !== null && (
 						<motion.span
-							key={`animation-${Date.now()}`} // Ensure unique key for each animation
+							key={`animation-${Date.now()}`}
 							className="text-2xl font-medium text-[#198754] absolute right-0 top-0"
 							initial={{
 								scale: 2.5,
-								x: 20, // Offset to the right
+								x: 20,
 							}}
 							animate={{
 								scale: 1,
 								x: 0,
 							}}
 							style={{
-								transformOrigin: "right top", // Set consistent transformOrigin via style
+								transformOrigin: "right top",
 							}}
 							transition={{
 								duration: 0.4,
 								ease: "easeInOut",
 							}}
 							onAnimationComplete={() => {
-								// When animation completes, show the counter
 								setIsCounterVisible(true);
 							}}
 						>
