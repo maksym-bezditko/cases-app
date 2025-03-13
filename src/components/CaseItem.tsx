@@ -1,5 +1,8 @@
+"use client";
+
 import type React from "react";
 import type { Case } from "@/types/case";
+import { useCounterStore } from "@/store/useCounterStore";
 
 type CaseItemProps = Omit<Case, "id">;
 
@@ -8,8 +11,10 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	close_date,
 	proof_needed,
 	description,
-	payout_amount = "$20",
+	payout_amount,
 }) => {
+	const increment = useCounterStore((state) => state.increment);
+
 	// Calculate days left
 	const daysLeft = Math.max(
 		0,
@@ -26,26 +31,24 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		year: "numeric",
 	});
 
-	return (
-		<div className="w-full md:w-[370px] md:h-[197px] bg-gray-100 p-4 text-xs cursor-pointer  flex flex-col relative">
-			<div className="hidden">
-				<svg
-					className="pl-1 translate-y-[-1px]"
-					width="12"
-					height="10"
-					viewBox="0 0 32 25"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-					aria-hidden="true"
-				>
-					<path
-						d="M27 0L12 15L5 8L0 13L12 25L32 5L27 0Z"
-						fill="black"
-					/>
-				</svg>
-				<span className="pl-1">Already filed</span>
-			</div>
+	const handleClick = () => {
+		increment(payout_amount);
+	};
 
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			increment(payout_amount);
+		}
+	};
+
+	return (
+		<div
+			className="w-full md:w-[370px] md:h-[197px] bg-gray-100 p-4 text-xs cursor-pointer flex flex-col relative text-left"
+			onClick={handleClick}
+			onKeyDown={handleKeyDown}
+			aria-label={`Select case: ${name}`}
+		>
 			{/* Main content */}
 			<div className="flex gap-3 flex-grow">
 				{/* Checkbox */}
@@ -158,7 +161,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 						<span className="text-[10px] align-super pr-1">
 							Up to
 						</span>
-						<span>{payout_amount}</span>
+						<span>${payout_amount}</span>
 					</div>
 				</div>
 			</div>

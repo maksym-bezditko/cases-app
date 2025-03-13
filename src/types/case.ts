@@ -4,7 +4,7 @@ export interface Case {
 	description: string;
 	proof_needed: boolean;
 	close_date: Date;
-	payout_amount: string;
+	payout_amount: number;
 }
 
 export interface CaseJSON {
@@ -13,5 +13,5 @@ export interface CaseJSON {
 	description: string;
 	proof_needed: boolean;
 	close_date: string; // In JSON, dates are stored as strings
-	payout_amount: string;
+	payout_amount: number;
 }
