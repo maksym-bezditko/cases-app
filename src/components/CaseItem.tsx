@@ -1,10 +1,12 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Case } from "../types/case";
 import { useCounterStore } from "../store/useCounterStore";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFeatureFlagVariantKey } from "posthog-js/react";
+import { isPostHogAvailable, captureEvent } from "../utils/posthog";
 
 type CaseItemProps = Omit<Case, "id"> & {
 	id: number;
@@ -26,9 +28,28 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 	const backdropRef = useRef<HTMLDivElement>(null);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+	// Always call the hook, but only use its value if PostHog is available
+	const featureFlagVariantFromHook =
+		useFeatureFlagVariantKey("new-feature-flag");
+	const featureFlagVariant = isPostHogAvailable()
+		? featureFlagVariantFromHook
+		: "control";
+
 	useEffect(() => {
 		audioRef.current = new Audio("/button-pressed.mp3");
 	}, []);
+
+	const closeModal = useCallback(() => {
+		setIsModalOpen(false);
+		document.body.style.overflow = "";
+
+		// Track modal close with PostHog
+		captureEvent("case_details_closed", {
+			case_id: id,
+			case_name: name,
+			feature_variant: featureFlagVariant,
+		});
+	}, [id, name, featureFlagVariant]);
 
 	useEffect(() => {
 		const handleEscKey = (e: KeyboardEvent) => {
@@ -44,7 +65,7 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		return () => {
 			document.removeEventListener("keydown", handleEscKey);
 		};
-	}, [isModalOpen]);
+	}, [closeModal, isModalOpen]);
 
 	const daysLeft = Math.max(
 		0,
@@ -69,6 +90,15 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 			});
 		}
 		toggleCase(id, payout_amount);
+
+		// Track case selection with PostHog
+		captureEvent("case_toggled", {
+			case_id: id,
+			case_name: name,
+			payout_amount,
+			was_selected: !isSelected,
+			feature_variant: featureFlagVariant,
+		});
 	};
 
 	const handleContainerClick = (e: React.MouseEvent) => {
@@ -76,15 +106,6 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 			checkboxRef.current &&
 			!checkboxRef.current.contains(e.target as Node)
 		) {
-			console.log(name);
-			console.log("Case clicked:", {
-				caseId: id,
-				caseName: name,
-				timestamp: new Date().toISOString(),
-				payoutAmount: payout_amount,
-				daysLeft,
-				isSelected,
-			});
 			performToggle();
 		}
 	};
@@ -103,18 +124,15 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 
 	const handleMoreClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		console.log("More button clicked:", {
-			caseId: id,
-			caseName: name,
-			timestamp: new Date().toISOString(),
-			description: description.length,
-		});
 		setIsModalOpen(true);
 		document.body.style.overflow = "hidden";
-	};
 
-	const closeModal = () => {
-		setIsModalOpen(false);
+		// Track 'more details' click with PostHog
+		captureEvent("case_details_opened", {
+			case_id: id,
+			case_name: name,
+			feature_variant: featureFlagVariant,
+		});
 	};
 
 	const handleBackdropClick = (e: React.MouseEvent) => {
@@ -159,9 +177,18 @@ export const CaseItem: React.FC<CaseItemProps> = ({
 		visible: { opacity: 1 },
 	};
 
+	// Apply different card styles based on feature flag variants
+	const getCardStyles = () => {
+		if (featureFlagVariant === "test") {
+			return "w-full md:w-[370px] md:h-[197px] bg-blue-50 p-5 text-xs cursor-pointer flex flex-col relative text-left rounded-lg shadow-md";
+		} else {
+			return "w-full md:w-[370px] md:h-[197px] bg-gray-100 p-4 text-xs cursor-pointer flex flex-col relative text-left";
+		}
+	};
+
 	return (
 		<div
-			className="w-full md:w-[370px] md:h-[197px] bg-gray-100 p-4 text-xs cursor-pointer flex flex-col relative text-left"
+			className={getCardStyles()}
 			onClick={handleContainerClick}
 			onKeyDown={() => {
 				/* This handler is just for linter compliance */
